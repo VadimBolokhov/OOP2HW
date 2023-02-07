@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Homework.Movement
@@ -8,7 +9,6 @@ namespace Homework.Movement
         private readonly float _maxX;
         private readonly float _speed;
         private int _direction = 1;
-
 
         public Walk(MonoBehaviour owner) : base(owner)
         {
@@ -28,10 +28,11 @@ namespace Homework.Movement
 
             Owner.transform.position = newPosition;
 
-            if (newPosition.x > _maxX)
-                _direction = -1;
-            else if (newPosition.x < _minX)
-                _direction = 1;
+            if (newPosition.x > _maxX || newPosition.x < _minX)
+            {
+                _direction *= -1;
+                OnMovementDirectionChanged?.Invoke();
+            }
         }
     }
 }

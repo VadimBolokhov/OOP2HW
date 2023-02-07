@@ -21,12 +21,13 @@ namespace Homework
         [SerializeField]
         private List<GameObject> _objectsToSpawn;
 
-        private readonly List<GameObject> _spawnedObjects = new List<GameObject>();
+        private readonly Queue<GameObject> _spawnedObjects = new();
 
 
         void Start()
         {
             StartCoroutine(SpawnNext());
+            StartCoroutine(RemoveNext());
         }
 
         private IEnumerator SpawnNext()
@@ -44,7 +45,20 @@ namespace Homework
 
                     var spawnedObject = Instantiate(_objectsToSpawn[i], transform);
 
-                    _spawnedObjects.Add(spawnedObject);
+                    _spawnedObjects.Enqueue(spawnedObject);
+                }
+            }
+        }
+
+        private IEnumerator RemoveNext()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(_spawnDelay + 3);
+
+                if (_spawnedObjects.Count > 0)
+                {
+                    Destroy(_spawnedObjects.Dequeue());
                 }
             }
         }

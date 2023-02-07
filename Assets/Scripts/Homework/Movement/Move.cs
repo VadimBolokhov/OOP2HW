@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Homework.Movement
@@ -5,6 +6,7 @@ namespace Homework.Movement
     public abstract class Move
     {
         protected MonoBehaviour Owner;
+        public Action OnMovementDirectionChanged;
 
         protected Move(MonoBehaviour owner)
         {

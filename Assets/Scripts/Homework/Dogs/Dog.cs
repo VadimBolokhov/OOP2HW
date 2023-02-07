@@ -10,16 +10,19 @@ namespace Homework.Dogs
      * 2. HappyDog должен гавкать более радостно.
      * 3. (сложно) Пусть собаки гавкают только тогда, когда меняют направление движения.
      */
-    public abstract class Dog : MonoBehaviour, IColorChangeable
+    public abstract class Dog : MonoBehaviour, IColorChangeable, IBarkable
     {
         public abstract void ChangeColor();
 
+        public abstract void Bark();
+        
         protected Move Move;
 
+        private SpriteRenderer _spriteRenderer;
 
         protected void Start()
         {
-            Move = new Walk(this, -4, 4, 1);
+            Move = ProvideMovementBehaviour();
 
             InputController.Instance.OnColorChanged += OnColorChanged;
         }
@@ -37,6 +40,26 @@ namespace Homework.Dogs
         private void OnColorChanged()
         {
             ChangeColor();
+        }
+
+        protected SpriteRenderer GetSpriteRenderer()
+        {
+            if (_spriteRenderer == null)
+                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+            return _spriteRenderer;
+        }
+
+        protected virtual Move ProvideMovementBehaviour()
+        {
+            var movementBehaviour = new Walk(this, -4, 4, 1);
+            movementBehaviour.OnMovementDirectionChanged += OnMovementDirectionChanged;
+            return movementBehaviour;
+        }
+
+        private void OnMovementDirectionChanged()
+        {
+            Bark();
         }
     }
 }
